@@ -1,44 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/mode_provider.dart';
+import '../../providers/bus_provider.dart';
+import '../../services/bus_service.dart';
 
 class ModeToggleAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ModeToggleAppBar({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: Consumer(
-          builder: (context, ref, child) {
-            final stationMode = ref.watch(stationModeProvider);
 
-            final modeText = stationMode == StationMode.misa ? '미사역' : '야탑역';
+      backgroundColor: Colors.white.withOpacity(0.5), // 투명한 흰색 배경
+      elevation: 0,
+      centerTitle: true,
+      title: Consumer(
+        builder: (context, ref, child) {
+          final Map<String, String> stationMode = ref.watch(selectedStationProvider);
+          final modeText = stationMode == BusStations.misaStation
+              ? '미사 to 야탑'
+              : '야탑 to 미사';
 
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                modeText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.sync),
-                tooltip: '모드 변경',
-                onPressed: () {
-                  // 현재 모드에 따라 토글
-                  ref.read(stationModeProvider.notifier).state =
-                      stationMode == StationMode.misa
-                          ? StationMode.yatap
-                          : StationMode.misa;
-                },
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) =>
+                    FadeTransition(opacity: animation, child: child),
+                child: Text(
+                  modeText,
+                  key: ValueKey(modeText),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // 텍스트 색상: 검정
+                  ),
+                ),
               ),
             ],
           );
-        }
+        },
+      ),
+      actions: [
+        Consumer(
+          builder: (context, ref, child) {
+            final Map<String, String> stationMode = ref.watch(selectedStationProvider);
+            return IconButton(
+              icon: const Icon(Icons.sync, color: Colors.black), // 아이콘 색상: 검정
+              tooltip: '모드 변경',
+              onPressed: () {
+                ref.read(selectedStationProvider.notifier).state =
+                stationMode == BusStations.misaStation
+                    ? BusStations.yatapStation
+                    : BusStations.misaStation;
+              },
+            );
+          },
+        ),
+      ],
+      bottom:  PreferredSize(
+        preferredSize: Size.fromHeight(1.0),
+        child: Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.grey.withOpacity(0.2),
+        ),
       ),
     );
   }

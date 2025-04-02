@@ -1,7 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'screens/bus_tracking_screen.dart';
+import 'package:track3000/providers/time_provider.dart';
+import 'package:track3000/screens/view/s_main.dart';
+import 'models/bus_arrival.dart';
+import 'providers/bus_provider.dart';
+import 'services/bus_service.dart';
+import 'package:track3000/screens/appbar/w_mode_appbar.dart';
 
 Future<void> main() async {
   // .env 파일에서 API 키 로드
@@ -12,16 +18,18 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '3000번 버스 위치 조회',
+      title: '버스 도착 정보',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const BusTrackingScreen(),
+      home: const BusArrivalScreen(),
     );
   }
 }
+
+
+
