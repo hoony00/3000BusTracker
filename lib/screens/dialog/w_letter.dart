@@ -23,6 +23,7 @@ class AnimatedLetterDialogState extends State<AnimatedLetterDialog>
   final String description4 = dotenv.env['DESCRIPTION_4'] ?? '설명이 없습니다';
   final String description5 = dotenv.env['DESCRIPTION_5'] ?? '설명이 없습니다';
   final String description6 = dotenv.env['DESCRIPTION_6'] ?? '설명이 없습니다';
+  final String description7 = dotenv.env['DESCRIPTION_7'] ?? '설명이 없습니다';
 
   @override
   void initState() {
@@ -103,7 +104,8 @@ class AnimatedLetterDialogState extends State<AnimatedLetterDialog>
                           _buildLetterParagraph(description3),
                           _buildLetterParagraph(description4),
                           _buildLetterParagraph(description5),
-                          _buildLetterParagraph(description6, isTitle: true),
+                          _buildLetterParagraph(description6,),
+                          _buildLetterParagraph(description7, isTitle: true),
                         ],
                       ),
                     ),
