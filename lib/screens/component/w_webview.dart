@@ -25,8 +25,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
         title: const Text('3000번 버스 노선 조회'),
       ),
       body: WebViewWidget(controller: _controller),

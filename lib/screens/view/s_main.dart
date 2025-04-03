@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/bus_provider.dart';
 import '../appbar/w_mode_appbar.dart';
 import '../component/w_card.dart';
+import '../component/w_empty.dart';
 
 class BusArrivalScreen extends ConsumerWidget {
   const BusArrivalScreen({super.key});
@@ -22,7 +23,7 @@ class BusArrivalScreen extends ConsumerWidget {
         child: busArrivalAsync.when(
           data: (busArrivals) {
             if (busArrivals.isEmpty) {
-              return Center(child: Text("버스 정보가 아직 없습니다"));
+              return BusInfoNotFound();
             }
 
             return ListView.builder(
@@ -36,11 +37,8 @@ class BusArrivalScreen extends ConsumerWidget {
               },
             );
           },
-          error: (error, stack) => Center(child: Text("버스 정보가 없습니다")),
-          loading: () => const Center(child: CircularProgressIndicator(
-            color: Color(0xFF33B5E5),
-
-          )),
+          error: (error, stack) => BusInfoNotFound(),
+          loading: () => const Center(child: CircularProgressIndicator()),
         ),
       ),
     );

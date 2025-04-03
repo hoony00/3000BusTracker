@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AnimatedLetterDialog extends StatefulWidget {
   const AnimatedLetterDialog({super.key});
@@ -7,9 +8,15 @@ class AnimatedLetterDialog extends StatefulWidget {
   _AnimatedLetterDialogState createState() => _AnimatedLetterDialogState();
 }
 
-class _AnimatedLetterDialogState extends State<AnimatedLetterDialog> with TickerProviderStateMixin {
+class _AnimatedLetterDialogState extends State<AnimatedLetterDialog>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<Offset> _animation;
+  late Animation<Offset> _positionAnimation;
+  late Animation<double> _opacityAnimation;
+
+  final String title = dotenv.env['TITLE'] ?? '제목이 없습니다';
+  final String description = dotenv.env['DESCRIPTION'] ?? '설명이 없습니다';
+
 
   @override
   void initState() {
@@ -19,10 +26,20 @@ class _AnimatedLetterDialogState extends State<AnimatedLetterDialog> with Ticker
       vsync: this,
     );
 
-    _animation = Tween<Offset>(
-      begin: const Offset(0, 10), // 아래에서 시작
-      end: const Offset(0, 5),   // 원래 위치로 이동
+    // 위치 애니메이션 (아래에서 위로 슈웅)
+    _positionAnimation = Tween<Offset>(
+      begin: const Offset(0, 1), // 아래에서 시작
+      end: const Offset(0, 0), // 원래 위치로 이동
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    // 불투명도 애니메이션 (처음에는 투명, 끝에는 불투명)
+    _opacityAnimation = Tween<double>(
+      begin: 0.0, // 처음에는 투명
+      end: 1.0, // 마지막에는 불투명
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    // 애니메이션 시작
+    _controller.forward();
   }
 
   @override
@@ -31,88 +48,57 @@ class _AnimatedLetterDialogState extends State<AnimatedLetterDialog> with Ticker
     super.dispose();
   }
 
-  void _showLetterDialog(BuildContext context) {
-    _controller.forward(); // 애니메이션 시작
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: SlideTransition(
-            position: _animation,
-            child: Container(
-              width: 300,
-              height: 400,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: SlideTransition(
+        position: _positionAnimation, // 애니메이션 위치
+        child: FadeTransition(
+          opacity: _opacityAnimation, // 애니메이션 불투명도
+          child: Container(
+            width: 350,
+            height: 500,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // SingleChildScrollView로 텍스트 내용 스크롤 가능하게 만들기
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(description,
+                        style: TextStyle(fontSize: 17, color: Colors.black54),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '편지 제목',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      '여기 텍스트 내용이 들어갑니다. 아주아주 이쁜 다이얼로그입니다!',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('애니메이션 편지지 다이얼로그'),
-      ),
-      body: Center(
-        child: GestureDetector(
-          onTap: () => _showLetterDialog(context),
-          child: Text(
-            '여기를 클릭하세요!',
-            key: ValueKey('modeText'),
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black, // 텍스트 색상: 검정
             ),
           ),
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: AnimatedLetterDialog(),
-  ));
 }

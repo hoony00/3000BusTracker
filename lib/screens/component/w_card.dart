@@ -60,7 +60,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
     final timeString = '$minutes:${seconds.toString().padLeft(2, '0')}';
 
     final arrivalTime = targetArrivalTime.add(remainingTime);
-    final formattedArrivalTime = DateFormat('HH:mm').format(arrivalTime);
+    final formattedArrivalTime = DateFormat('h:mm a').format(arrivalTime);
 
     final isTimeCritical = remainingTime.inMinutes < 2;
 
@@ -129,7 +129,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          '정류장 전: ${widget.busArrival.prevStationCount}개',
+                          '남은 정류장: ${widget.busArrival.prevStationCount}개',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

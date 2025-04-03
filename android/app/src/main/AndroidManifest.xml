@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="track3000"
+        android:label="3000만큼 사랑해"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
