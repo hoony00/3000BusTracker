@@ -73,46 +73,66 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
 
     final isMisa = ref.watch(selectedStationProvider) == BusStations.misaStation;
 
+    Color customColor = isMisa ? const Color(0xFF33B5E5) : const Color(0xFF7ED321);
+
     return Center(
       child: Card(
+        surfaceTintColor: Colors.transparent,
+        color: Colors.white,
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.all(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-              colors: isMisa ? [
-                const Color(0xFF33B5E5),
-                const Color(0xFF7ED321),
-              ] : [
-                const Color(0xFF7ED321),
-                const Color(0xFF33B5E5),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+        child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
+              Stack(
                 children: [
-                  const Icon(Icons.location_on, color: Colors.white70),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      widget.stationName,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, color: customColor, size: 30),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: Text(
+                          widget.stationName,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: -5,
+                    right: -5,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 6,
+                            offset: Offset(4, 4),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                      isMisa ? '성남행' : '하남행',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(
@@ -121,25 +141,15 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${widget.busArrival.routeNumber}번 버스',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
                           '남은 정류장: ${widget.busArrival.prevStationCount}개',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 10),
                         Text(
                           '도착 예정 시간: $formattedArrivalTime',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -151,7 +161,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white24,
+                        color: customColor,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Column(
@@ -159,8 +169,8 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                           ShakeTransition(
                             animation: _shakeAnimation,  // 변경된 애니메이션 타입 사용
                             child: Icon(
-                              Icons.timer,
                               color: Colors.white,
+                              Icons.timer,
                             ),
                           ),
                           const SizedBox(height: 6),

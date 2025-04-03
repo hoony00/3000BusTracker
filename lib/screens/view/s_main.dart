@@ -17,28 +17,37 @@ class BusArrivalScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: ModeToggleAppBar(),
-      body: RefreshIndicator(
-        color: Color(0xFF33B5E5),
-        onRefresh: () => ref.refresh(busArrivalProvider.future),
-        child: busArrivalAsync.when(
-          data: (busArrivals) {
-            if (busArrivals.isEmpty) {
-              return BusInfoNotFound();
-            }
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage('assets/images/back2.png'),
+            fit: BoxFit.cover,
 
-            return ListView.builder(
-              itemCount: busArrivals.length,
-              itemBuilder: (context, index) {
-                final busArrival = busArrivals[index];
-                return BusArrivalCard(
-                  busArrival: busArrival,
-                  stationName: selectedStation['name']!,
-                );
-              },
-            );
-          },
-          error: (error, stack) => BusInfoNotFound(),
-          loading: () => const Center(child: CircularProgressIndicator()),
+          ),
+        ),
+        child: RefreshIndicator(
+          color: Color(0xFF33B5E5),
+          onRefresh: () => ref.refresh(busArrivalProvider.future),
+          child: busArrivalAsync.when(
+            data: (busArrivals) {
+              if (busArrivals.isEmpty) {
+                return BusInfoNotFound();
+              }
+
+              return ListView.builder(
+                itemCount: busArrivals.length,
+                itemBuilder: (context, index) {
+                  final busArrival = busArrivals[index];
+                  return BusArrivalCard(
+                    busArrival: busArrival,
+                    stationName: selectedStation['name']!,
+                  );
+                },
+              );
+            },
+            error: (error, stack) => BusInfoNotFound(),
+            loading: () => const Center(child: CircularProgressIndicator()),
+          ),
         ),
       ),
     );

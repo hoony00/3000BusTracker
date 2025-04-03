@@ -8,43 +8,48 @@ class BusInfoNotFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "버스 정보가 아직 없습니다",
-            style: TextStyle(fontSize: 18, color: Colors.black),
-          ),
-          const SizedBox(height: 20), // 텍스트와 버튼 사이의 간격
-          Consumer(
-            builder: (context, ref, child) {
-              final bool isMisa =
-                  ref.watch(selectedStationProvider) == BusStations.misaStation;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 300),
+      child: Center(
+        child: Container(
+          width: 250,
+          height: 250,
 
-              return IconButton(
-                onPressed: () {
-                  final station = ref.watch(selectedStationProvider);
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "버스 정보가 아직 없습니다",
+                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 20), // 텍스트와 버튼 사이의 간격
+              Consumer(
+                builder: (context, ref, child) {
 
-                  ref
-                      .read(busServiceProvider)
-                      .getBusArrivalInfo(
-                        nodeId: station['nodeId']!,
-                        routeId: station['routeId']!,
-                        cityId: station['cityId']!,
-                      );
+
+                  return IconButton(
+                    onPressed: () {
+                      final station = ref.watch(selectedStationProvider);
+
+                      ref
+                          .read(busServiceProvider)
+                          .getBusArrivalInfo(
+                            nodeId: station['nodeId']!,
+                            routeId: station['routeId']!,
+                            cityId: station['cityId']!,
+                          );
+                    },
+                    icon: Icon(
+                      Icons.refresh,
+                      size: 35,
+                      color: Colors.black87,
+                    ),
+                  );
                 },
-                icon: Icon(
-                  Icons.refresh,
-                  color:
-                      isMisa
-                          ? const Color(0xFF7ED321)
-                          : const Color(0xFF33B5E5),
-                ),
-              );
-            },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

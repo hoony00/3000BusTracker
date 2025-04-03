@@ -12,7 +12,7 @@ ThemeData buildThemeData(BuildContext context) {
 
     //CircularProgressIndicator
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: Color(0xFF33B5E5),
+      color: Colors.white,
     ),
 
     // 다이얼로그
