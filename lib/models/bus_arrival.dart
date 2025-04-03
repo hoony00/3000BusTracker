@@ -29,6 +29,7 @@ class BusArrival {
   );
 
   // JSON의 리스트를 파싱하는 메서드
+// JSON의 리스트를 파싱하는 메서드
   static List<BusArrival> fromJsonList(Map<String, dynamic> json) {
     try {
       final items = json['response']['body']['items']['item'];
@@ -40,6 +41,14 @@ class BusArrival {
       if (itemList.isEmpty) {
         throw Exception("버스 정보가 아직 없습니다");
       }
+
+      // 정렬: prevStationCount 기준으로 오름차순 정렬
+      itemList.sort((a, b) {
+        final prevStationCountA = a['arrprevstationcnt'] as int;
+        final prevStationCountB = b['arrprevstationcnt'] as int;
+        return prevStationCountA.compareTo(prevStationCountB);
+      });
+
       return itemList.map((item) {
         return BusArrival(
           arrivalTime: item['arrtime'] as int,
@@ -55,4 +64,5 @@ class BusArrival {
       throw Exception("버스 정보가 아직 없습니다");
     }
   }
+
 }

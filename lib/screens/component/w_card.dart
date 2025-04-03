@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';  // 날짜 포맷팅을 위한 패키지
 
 import '../../models/bus_arrival.dart';
+import '../../providers/bus_provider.dart';
 import '../../providers/time_provider.dart';
+import '../../services/bus_service.dart';
 
 /// 각 버스 도착 정보를 표시하는 카드 위젯 (Flex를 이용한 반응형 디자인, 힙한 테마 및 애니메이션 적용)
 class BusArrivalCard extends ConsumerStatefulWidget {
@@ -18,26 +21,57 @@ class BusArrivalCard extends ConsumerStatefulWidget {
   @override
   ConsumerState<BusArrivalCard> createState() => _BusArrivalCardState();
 }
-
-class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
+class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProviderStateMixin {
   late final DateTime targetArrivalTime;
+  late final AnimationController _shakeController;
+  late final Animation<Offset> _shakeAnimation;  // Animation<Offset>으로 수정
 
   @override
   void initState() {
     super.initState();
-    // 한 번만 계산해서 고정된 도착 시각으로 사용
     targetArrivalTime = DateTime.now().add(
       Duration(seconds: widget.busArrival.arrivalTime),
     );
+
+    // 애니메이션 컨트롤러 초기화
+    _shakeController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
+    // 애니메이션 설정 (좌우로 흔들리기)
+    _shakeAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.0),
+      end: const Offset(0.05, 0.0),
+    ).animate(CurvedAnimation(parent: _shakeController, curve: Curves.elasticIn));  // Animation<Offset>으로 변경
+  }
+
+  @override
+  void dispose() {
+    _shakeController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // targetArrivalTime이 고정된 값이므로 countdownProvider의 key가 계속 동일하게 유지됩니다.
     final remainingTime = ref.watch(countdownProvider(targetArrivalTime));
     final minutes = remainingTime.inMinutes;
     final seconds = remainingTime.inSeconds % 60;
     final timeString = '$minutes:${seconds.toString().padLeft(2, '0')}';
+
+    final arrivalTime = targetArrivalTime.add(remainingTime);
+    final formattedArrivalTime = DateFormat('HH:mm').format(arrivalTime);
+
+    final isTimeCritical = remainingTime.inMinutes < 2;
+
+    // 'isTimeCritical'이 true일 때 애니메이션을 시작
+    if (isTimeCritical) {
+      _shakeController.repeat(reverse: true);
+    } else {
+      _shakeController.stop();
+    }
+
+    final isMisa = ref.watch(selectedStationProvider) == BusStations.misaStation;
 
     return Center(
       child: Card(
@@ -48,11 +82,12 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
-              colors: [
-                Color(0xFF7ED321), // 연두
-                Color(0xFF7ED321), // 연두
-                Color(0xFF33B5E5), // 하늘/민트
-                Color(0xFF33B5E5), // 하늘/민트
+              colors: isMisa ? [
+                const Color(0xFF33B5E5),
+                const Color(0xFF7ED321),
+              ] : [
+                const Color(0xFF7ED321),
+                const Color(0xFF33B5E5),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -62,7 +97,6 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 상단: 역 이름과 위치 아이콘
               Row(
                 children: [
                   const Icon(Icons.location_on, color: Colors.white70),
@@ -79,7 +113,6 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
                 ],
               ),
               const SizedBox(height: 20),
-              // 버스 노선 정보 및 도착 시간 정보
               Row(
                 children: [
                   Expanded(
@@ -99,6 +132,15 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
                           '정류장 전: ${widget.busArrival.prevStationCount}개',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '도착 예정 시간: $formattedArrivalTime',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -114,22 +156,19 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
                       ),
                       child: Column(
                         children: [
-                          const Icon(Icons.timer, color: Colors.white),
-                          const SizedBox(height: 6),
-                          // AnimatedSwitcher를 이용한 부드러운 타이머 전환 효과
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            transitionBuilder: (child, animation) => FadeTransition(
-                              opacity: animation,
-                              child: child,
+                          ShakeTransition(
+                            animation: _shakeAnimation,  // 변경된 애니메이션 타입 사용
+                            child: Icon(
+                              Icons.timer,
+                              color: Colors.white,
                             ),
-                            child: Text(
-                              timeString,
-                              key: ValueKey(timeString),
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            timeString,
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -143,5 +182,21 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> {
         ),
       ),
     );
+  }
+}
+
+class ShakeTransition extends AnimatedWidget {
+  final Widget child;
+
+  const ShakeTransition({
+    super.key,
+    required Animation<Offset> animation,  // Animation<Offset>으로 수정
+    required this.child,
+  }) : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    final animation = listenable as Animation<Offset>;
+    return SlideTransition(position: animation, child: child);
   }
 }
