@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import '../component/w_dash_line.dart';
+
 class AnimatedLetterDialog extends StatefulWidget {
   const AnimatedLetterDialog({super.key});
 
   @override
-  _AnimatedLetterDialogState createState() => _AnimatedLetterDialogState();
+  AnimatedLetterDialogState createState() => AnimatedLetterDialogState();
 }
 
-class _AnimatedLetterDialogState extends State<AnimatedLetterDialog>
+class AnimatedLetterDialogState extends State<AnimatedLetterDialog>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _positionAnimation;
   late Animation<double> _opacityAnimation;
 
   final String title = dotenv.env['TITLE'] ?? '제목이 없습니다';
-  final String description = dotenv.env['DESCRIPTION'] ?? '설명이 없습니다';
-
+  final String description1 = dotenv.env['DESCRIPTION_1'] ?? '설명이 없습니다';
+  final String description2 = dotenv.env['DESCRIPTION_2'] ?? '설명이 없습니다';
+  final String description3 = dotenv.env['DESCRIPTION_3'] ?? '설명이 없습니다';
+  final String description4 = dotenv.env['DESCRIPTION_4'] ?? '설명이 없습니다';
+  final String description5 = dotenv.env['DESCRIPTION_5'] ?? '설명이 없습니다';
+  final String description6 = dotenv.env['DESCRIPTION_6'] ?? '설명이 없습니다';
 
   @override
   void initState() {
@@ -61,35 +67,44 @@ class _AnimatedLetterDialogState extends State<AnimatedLetterDialog>
             width: 350,
             height: 500,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFFF8E6E1), // 편지지 배경색
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 15,
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 10,
                   offset: const Offset(0, 8),
                 ),
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 제목 텍스트 (편지지 스타일로)
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      fontSize: 23, // 크기 조정
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87, // 색상 변경
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // SingleChildScrollView로 텍스트 내용 스크롤 가능하게 만들기
+                  // 본문 내용 (단락별로 나누고 밑줄 추가)
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Text(description,
-                        style: TextStyle(fontSize: 17, color: Colors.black54),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLetterParagraph(description1),
+                          _buildLetterParagraph(description2),
+                          _buildLetterParagraph(description3),
+                          _buildLetterParagraph(description4),
+                          _buildLetterParagraph(description5),
+                          _buildLetterParagraph(description6, isTitle: true),
+                        ],
                       ),
                     ),
                   ),
@@ -99,6 +114,34 @@ class _AnimatedLetterDialogState extends State<AnimatedLetterDialog>
           ),
         ),
       ),
+    );
+  }
+
+  // 편지 단락에 밑줄을 추가하는 위젯
+  Widget _buildLetterParagraph(String text, {bool isTitle = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: !isTitle ? FontWeight.w400 : FontWeight.w600, // 제목일 때 두껍게
+            color:  !isTitle ? Colors.black87 : Colors.black87, // 색상 변경
+            height: 1.6, // 줄 간격 조정
+          ),
+        ),
+        const SizedBox(height: 10),
+        !isTitle
+            ?
+            // 쪼개진 divider
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: DashDivider(height: .5, color: Colors.brown[700]!, dashWidth: 10),
+            )
+            : SizedBox.shrink(),
+
+      ],
     );
   }
 }

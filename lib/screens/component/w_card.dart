@@ -81,7 +81,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
         color: Colors.white,
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(12),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -110,7 +110,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: isMisa ? const Color(0xFF7ED321) : const Color(0xFF33B5E5),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(

@@ -46,10 +46,11 @@ class ModeToggleAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  // 텍스트 클릭 시 AnimatedLetterDialog 호출
-                  showDialog(
-                    context: context,
-                    builder: (_) => const AnimatedLetterDialog(),
+
+                  ref.read(busServiceProvider).getBusArrivalInfo(
+                    nodeId: stationMode['nodeId']!,
+                    routeId: stationMode['routeId']!,
+                    cityId: stationMode['cityId']!,
                   );
                 },
                 child: AnimatedSwitcher(
