@@ -33,7 +33,7 @@ class BusArrival {
   static List<BusArrival> fromJsonList(Map<String, dynamic> json) {
     try {
       final items = json['response']['body']['items']['item'];
-      if (items == null) {
+      if (items == null || items == '') {
         throw Exception("버스 정보가 아직 없습니다");
       }
       // items가 리스트인지 확인 (하나의 결과만 있을 때도 객체로 올 수 있으므로)

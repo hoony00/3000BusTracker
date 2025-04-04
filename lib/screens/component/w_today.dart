@@ -8,7 +8,8 @@ class TodayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseDate = DateTime(2025, 4, 3);
     final currentDate = DateTime.now();
-    final daysLeft = baseDate.difference(currentDate).inDays + 1;
+
+    final daysLeft = baseDate.difference(currentDate).inDays.abs() + 1;
 
     return Positioned(
       bottom: 50,
