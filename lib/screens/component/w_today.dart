@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TodayWidget extends StatelessWidget {
   const TodayWidget({super.key});
@@ -14,21 +13,18 @@ class TodayWidget extends StatelessWidget {
     return Positioned(
       bottom: 50,
       left: 20,
-      child: Visibility(
-        visible: daysLeft != 1,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(
-            '❤️+$daysLeft',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          '❤️+$daysLeft',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

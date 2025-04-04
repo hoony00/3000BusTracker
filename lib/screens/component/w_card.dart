@@ -82,12 +82,13 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         margin: const EdgeInsets.all(12),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
+        child: Stack(
+          children: [
+
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     children: [
@@ -104,91 +105,94 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                       ),
                     ],
                   ),
-                  Positioned(
-                    top: -5,
-                    right: -5,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isMisa ? const Color(0xFF7ED321) : const Color(0xFF33B5E5),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 6,
-                            offset: Offset(4, 4),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                      isMisa ? '성남행' : '하남행',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 15,
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '남은 정류장: ${widget.busArrival.prevStationCount}개',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '도착 예정 시간: $formattedArrivalTime',
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: customColor,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            children: [
+                              ShakeTransition(
+                                animation: _shakeAnimation,  // 변경된 애니메이션 타입 사용
+                                child: Icon(
+                                  color: Colors.white,
+                                  Icons.timer,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                timeString,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '남은 정류장: ${widget.busArrival.prevStationCount}개',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          '도착 예정 시간: $formattedArrivalTime',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isMisa ? const Color(0xFF7ED321) : const Color(0xFF33B5E5),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: customColor,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        children: [
-                          ShakeTransition(
-                            animation: _shakeAnimation,  // 변경된 애니메이션 타입 사용
-                            child: Icon(
-                              color: Colors.white,
-                              Icons.timer,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            timeString,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: Offset(4, 4),
                     ),
+                  ],
+                ),
+                child: Text(
+                  isMisa ? '성남행' : '하남행',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 15,
                   ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
