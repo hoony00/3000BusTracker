@@ -84,69 +84,78 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
         margin: const EdgeInsets.all(12),
         child: Stack(
           children: [
-
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.location_on, color: customColor, size: 30),
+                      Icon(Icons.location_on, color: customColor, size: 23),
                       const SizedBox(width: 3),
                       Expanded(
                         child: Text(
                           widget.stationName,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          style: TextStyle(
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
+
+
                   Row(
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '남은 정류장: ${widget.busArrival.prevStationCount}개',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 27),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '남은 정류장: ${widget.busArrival.prevStationCount}개',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                    fontWeight: FontWeight.w500
+                                )
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              '도착 예정 시간: $formattedArrivalTime',
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
+                              Divider(),
+                              Text(
+                                '도착 예정 시간: $formattedArrivalTime',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500
+                                  )
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 70),
                       Expanded(
                         flex: 1,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: customColor,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Column(
                             children: [
+                              const SizedBox(height: 5),
                               ShakeTransition(
                                 animation: _shakeAnimation,  // 변경된 애니메이션 타입 사용
                                 child: Icon(
                                   color: Colors.white,
                                   Icons.timer,
+                                  size: 25,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 5),
                               Text(
                                 timeString,
                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -158,8 +167,10 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                           ),
                         ),
                       ),
+                      const SizedBox(width: 5)
                     ],
                   ),
+                  const SizedBox(height: 5),
                 ],
               ),
             ),
@@ -183,7 +194,7 @@ class _BusArrivalCardState extends ConsumerState<BusArrivalCard> with TickerProv
                   ],
                 ),
                 child: Text(
-                  isMisa ? '성남행' : '하남행',
+                  isMisa ? '야탑행' : '미사행',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
